@@ -80,33 +80,12 @@ dont_bother_goals := clean clobber dataclean installclean \
     vendorimage-nodeps \
     ramdisk-nodeps \
     bootimage-nodeps \
-    recoveryimage-nodeps
+    recoveryimage-nodeps \
+    burst novo surgical biopsy \
+	dirty appclean imgclean \
+	kernelclean systemclean rootclean
 
 ifneq ($(filter $(dont_bother_goals), $(MAKECMDGOALS)),)
-dont_bother := true
-endif
-ifeq ($(MAKECMDGOALS),magic)
-dont_bother := true
-endif
-ifeq ($(MAKECMDGOALS),dirty)
-dont_bother := true
-endif
-ifeq ($(MAKECMDGOALS),appclean)
-dont_bother := true
-endif
-ifeq ($(MAKECMDGOALS),imgclean)
-dont_bother := true
-endif
-ifeq ($(MAKECMDGOALS),kernelclean)
-dont_bother := true
-endif
-ifeq ($(MAKECMDGOALS),systemclean)
-dont_bother := true
-endif
-ifeq ($(MAKECMDGOALS),recoveryclean)
-dont_bother := true
-endif
-ifeq ($(MAKECMDGOALS),rootclean)
 dont_bother := true
 endif
 
@@ -1060,6 +1039,18 @@ clean:
 .PHONY: clobber
 clobber: clean
 
+# This should be almost as good as a clobber but keeping many of the time intensive files - DHO
+.PHONY: novo
+novo:
+	@rm -rf $(OUT_DIR)/target/*
+	@echo -e ${CL_GRN}"Target directory removed."${CL_RST}
+
+# This is designed for building in memory.  Clean products, but keep common files - DHO
+.PHONY: burst
+burst:
+	@rm -rf $(OUT_DIR)/target/product/*
+	@echo -e ${CL_GRN}"Product directory removed."${CL_RST}
+
 # Clears out all apks
 .PHONY: appclean
 appclean:
@@ -1100,13 +1091,6 @@ rootclean:
 	@rm -rf $(OUT_DIR)/target/product/*/root/
 	@echo -e ${CL_GRN}"All root components erased"${CL_RST}
 
-# The rules for dataclean and installclean are defined in cleanbuild.mk.
-
-.PHONY: magic
-magic:
-	@rm -rf $(OUT_DIR)/target/product/*
-	@echo -e ${CL_GRN}"Target/Product directory removed."${CL_RST}
-
 # Clears out zip and build.prop
 .PHONY: dirty
 dirty:
@@ -1114,6 +1098,27 @@ dirty:
 	@rm -rf $(OUT_DIR)/target/product/*/*.zip
 	@rm -rf $(OUT_DIR)/target/product/*/*.md5sum
 	@echo -e ${CL_GRN}"build.prop and zip files erased"${CL_RST}
+
+# This is designed for building in memory + keeping smaller build folders + common files - DHO
+.PHONY: surgical
+surgical:
+	@rm -rf $(OUT_DIR)/target/product/*/obj/
+	@rm -rf $(OUT_DIR)/target/product/*/symbols/
+	@rm -rf $(OUT_DIR)/target/product/*/vanir_*-ota-eng.$(USER).zip
+	@rm -rf $(OUT_DIR)/target/product/*/system.img
+	@rm -rf $(OUT_DIR)/target/product/*/userdata.img
+	@echo -e ${CL_GRN}"Surgical Strike Completed."${CL_RST}
+
+# This is designed for building on SSD but to whittle away at the bulk file size - DHO
+.PHONY: biopsy
+biopsy:
+	@rm -rf $(OUT_DIR)/target/product/*/*.zip
+	@rm -rf $(OUT_DIR)/target/product/*/system.img
+	@rm -rf $(OUT_DIR)/target/product/*/userdata.img
+	@rm -rf $(OUT_DIR)/target/product/*/system/app/*
+	@echo -e ${CL_GRN}"Surgical Strike Completed."${CL_RST}
+
+# The rules for dataclean and installclean are defined in cleanbuild.mk.
 
 #xxx scrape this from ALL_MODULE_NAME_TAGS
 .PHONY: modules
