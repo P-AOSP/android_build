@@ -1604,6 +1604,8 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
 .PHONY: otapackage bacon
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: otapackage
+	@echo -e ${CL_YLW}"Running releasetool..."${CL_RST}
+	$(hide) ./vendor/p-aosp/tools/squisher
 
 endif    # recovery_fstab is defined
 endif    # TARGET_NO_KERNEL != true
