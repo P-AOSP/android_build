@@ -1497,5 +1497,3 @@ do
     . $f
 done
 unset f
-# ensure that latest ccache is compiled for host
-build/tools/ccache_version_check.sh
