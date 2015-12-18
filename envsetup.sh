@@ -1497,6 +1497,3 @@ do
     . $f
 done
 unset f
-
-export ANDROID_BUILD_TOP=$(gettop)
-export PATH=$PATH:$ANDROID_BUILD_TOP/vendor/p-aosp/scripts
